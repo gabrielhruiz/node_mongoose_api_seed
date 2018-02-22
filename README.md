@@ -18,3 +18,11 @@ An optimized API REST project seed connecting with mongodb and is securized and 
  - Error manager system
  - Messages internationalization
  - Test plan implementation
+
+# Get started
+Add into project root a dot env file with the next lines:
+
+NEWS_API_APIKEY=<your_api_key>      -> Is necessary for good cron work
+JWT_SECRET=<your_secret>
+JWT_EXPIRATION=1d
+DB_NAME=<your_db_name>
