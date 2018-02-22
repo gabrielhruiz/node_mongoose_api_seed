@@ -1,0 +1,42 @@
+{
+  "name": "dummy-api",
+  "version": "0.0.1",
+  "author": "Gabriel <gabrielhruiz@gmail.com>",
+  "homepage": "",
+  "description": "API",
+  "private": true,
+  "dependencies": {
+    "async": "^2.5.0",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.16.1",
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "compression": "^1.7.1",
+    "config": "^1.25.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.1",
+    "cron": "^1.3.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.14.1",
+    "http-proxy": "^1.16.2",
+    "js-yaml": "^3.8.1",
+    "jsonwebtoken": "^7.3.0",
+    "lodash": "^4.17.4",
+    "mocha": "^3.2.0",
+    "moment": "^2.19.4",
+    "normalize-strings": "^1.1.0",
+    "passport": "^0.3.2",
+    "progress": "^2.0.0",
+    "request": "^2.79.0",
+    "sanitize-html": "^1.16.1",
+    "mongodb": "^3.0.1",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "start": "node server.js"
+  },
+  "main": "server.js",
+  "license": "ISC"
+}

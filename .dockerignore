@@ -1,0 +1,11 @@
+node_modules/
+.git/
+.dockerignore
+Dockerfile
+.gitignore
+.eslintrc.json
+.editorconfig
+
+temp/
+logs/
+test/
