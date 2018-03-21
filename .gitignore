@@ -43,3 +43,6 @@ jspm_packages
 # env file
 .env
 temp/*
+
+# Others
+package-lock.json
