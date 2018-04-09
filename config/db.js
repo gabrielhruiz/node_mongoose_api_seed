@@ -1,30 +1,28 @@
 /*
 * Author: gabrielhruiz
 * */
-'use strict';
+const config = require('./index');
 
-let config = require('./index');
-
-let MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
 
 // Connection URL
-const url = config.db.url;
+const { db: { url } } = config;
 
 // Database Name
 const dbName = config.db.name;
 
-let configuration = {
-    poolSize: 50
+const configuration = {
+  poolSize: 50,
 };
 
-let getConnection = function (callback) {
-    MongoClient.connect(url, configuration, function(err, client) {
-        if (err) {
-            config.logger.error('unexpected error getCollection: ' + err);
-            return err;
-        }
-        let db = client.db(dbName);
-        callback(db, client);
-    });
+const getConnection = (callback) => {
+  mongodb.MongoClient.connect(url, configuration, (err, client) => {
+    if (err) {
+      config.logger.error(`unexpected error getCollection: ${err}`);
+      return err;
+    }
+    const db = client.db(dbName);
+    return callback(db, client);
+  });
 };
 module.exports.getConnection = getConnection;
