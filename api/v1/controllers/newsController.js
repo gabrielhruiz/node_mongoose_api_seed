@@ -22,12 +22,14 @@ router.get('/new/:id', (req, res) => {
 });
 
 router.get('/new', (req, res) => {
-  const author = req.query.author || null;
-  const title = req.query.title || null;
-  const publishedAt = req.query.publishedAt || null;
-  const keyword = req.query.keyword || null;
+  const filter = {
+    author: req.query.author || null,
+    title: req.query.title || null,
+    publishedAt: req.query.publishedAt || null,
+    keyword: req.query.keyword || null,
+  };
 
-  newsService.getNews(author, title, publishedAt, keyword).then((response) => {
+  newsService.getNews(filter).then((response) => {
     res.status(200).json(response);
   }, (error) => {
     res.status(500).json(error);
@@ -35,18 +37,21 @@ router.get('/new', (req, res) => {
 });
 
 router.post('/new', authenticate.authenticate, (req, res) => {
-  const title = req.body.title || null;
-  const author = req.body.author || null;
-  const publishedAt = req.body.publishedAt || null;
-  const url = req.body.url || null;
-  const sourceId = req.body.sourceId || null;
-  const sourceName = req.body.sourceName || null;
+  const newObj = {
+    author: req.query.author || null,
+    title: req.query.title || null,
+    publishedAt: req.query.publishedAt || null,
+    keyword: req.query.keyword || null,
+    url: req.query.url || null,
+    sourceId: req.query.sourceId || null,
+    sourceName: req.query.sourceName || null,
+  };
 
-  if (title == null || author == null || publishedAt == null ||
-      url == null || sourceId == null || sourceName == null) {
+  if (newObj.title == null || newObj.author == null || newObj.publishedAt == null ||
+    newObj.url == null || newObj.sourceId == null || newObj.sourceName == null) {
     res.status(400).json('Missing required parameters.');
   } else {
-    newsService.createNew(title, author, publishedAt, url, sourceId, sourceName)
+    newsService.createNew(newObj)
       .then((response) => {
         res.status(200).json(response);
       }, (error) => {
@@ -56,17 +61,20 @@ router.post('/new', authenticate.authenticate, (req, res) => {
 });
 
 router.put('/new', authenticate.authenticate, (req, res) => {
-  const title = req.body.title || null;
-  const author = req.body.author || null;
-  const publishedAt = req.body.publishedAt || null;
-  const url = req.body.url || null;
-  const sourceId = req.body.sourceId || null;
-  const sourceName = req.body.sourceName || null;
+  const newObj = {
+    author: req.query.author || null,
+    title: req.query.title || null,
+    publishedAt: req.query.publishedAt || null,
+    keyword: req.query.keyword || null,
+    url: req.query.url || null,
+    sourceId: req.query.sourceId || null,
+    sourceName: req.query.sourceName || null,
+  };
 
-  if (title == null || author == null || publishedAt == null) {
+  if (newObj.title == null || newObj.author == null || newObj.publishedAt == null) {
     res.status(400).json('Missing required parameters.');
   } else {
-    newsService.updateNew(title, author, publishedAt, url, sourceId, sourceName)
+    newsService.updateNew(newObj)
       .then((response) => {
         res.status(200).json(response);
       }, (error) => {
@@ -76,18 +84,20 @@ router.put('/new', authenticate.authenticate, (req, res) => {
 });
 
 router.patch('/new/:id', authenticate.authenticate, (req, res) => {
-  const newId = req.params.id || null;
-  const title = req.body.title || null;
-  const author = req.body.author || null;
-  const publishedAt = req.body.publishedAt || null;
-  const url = req.body.url || null;
-  const sourceId = req.body.sourceId || null;
-  const sourceName = req.body.sourceName || null;
+  const filter = {
+    id: req.params.id || null,
+    author: req.body.author || null,
+    title: req.body.title || null,
+    publishedAt: req.body.publishedAt || null,
+    url: req.body.url || null,
+    sourceId: req.body.sourceId || null,
+    sourceName: req.body.sourceName || null,
+  };
 
-  if (newId == null) {
+  if (filter.newId == null) {
     res.status(400).json('Missing required parameters.');
   } else {
-    newsService.updateNewFields(title, author, publishedAt, url, sourceId, sourceName, newId)
+    newsService.updateNewFields(filter)
       .then((response) => {
         res.status(200).json(response);
       }, (error) => {

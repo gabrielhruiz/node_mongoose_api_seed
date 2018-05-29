@@ -18,20 +18,20 @@ module.exports.getNew = id => new Promise((resolve, reject) => {
   });
 });
 
-module.exports.getNews = (author, title, publishedAt, keyword) => new Promise((resolve, reject) => {
+module.exports.getNews = filter => new Promise((resolve, reject) => {
   const searchObject = {};
 
-  if (author != null) {
-    searchObject.author = author;
+  if (filter.author != null) {
+    searchObject.author = filter.author;
   }
-  if (title != null) {
-    searchObject.title = title;
+  if (filter.title != null) {
+    searchObject.title = filter.title;
   }
-  if (publishedAt != null) {
-    searchObject.publishedAt = publishedAt;
+  if (filter.publishedAt != null) {
+    searchObject.publishedAt = filter.publishedAt;
   }
-  if (keyword != null) {
-    searchObject.keyword = keyword;
+  if (filter.keyword != null) {
+    searchObject.keyword = filter.keyword;
   }
 
   db.getConnection((connection, client) => {
@@ -47,18 +47,18 @@ module.exports.getNews = (author, title, publishedAt, keyword) => new Promise((r
   });
 });
 
-module.exports.createNew = (title, author, publishedAt, url, sourceId, sourceName) => new Promise((resolve, reject) => {
+module.exports.createNew = newObj => new Promise((resolve, reject) => {
   db.getConnection((connection, client) => {
     const collection = connection.collection('news');
     collection.insertMany([
       {
-        title,
-        author,
-        publishedAt,
-        url,
+        title: newObj.title,
+        author: newObj.author,
+        publishedAt: newObj.publishedAt,
+        url: newObj.url,
         source: {
-          id: sourceId,
-          name: sourceName,
+          id: newObj.sourceId,
+          name: newObj.sourceName,
         },
       },
     ], (err, result) => {
@@ -72,20 +72,20 @@ module.exports.createNew = (title, author, publishedAt, url, sourceId, sourceNam
   });
 });
 
-module.exports.updateNew = (title, author, publishedAt, url, sourceId, sourceName) => new Promise((resolve, reject) => {
+module.exports.updateNew = newObj => new Promise((resolve, reject) => {
   db.getConnection((connection, client) => {
     const collection = connection.collection('news');
     collection.updateOne(
-      { author, title, publishedAt },
+      { author: newObj.author, title: newObj.title, publishedAt: newObj.publishedAt },
       {
         $set: {
-          title,
-          author,
-          publishedAt,
-          url,
+          title: newObj.title,
+          author: newObj.author,
+          publishedAt: newObj.publishedAt,
+          url: newObj.url,
           source: {
-            id: sourceId,
-            name: sourceName,
+            id: newObj.sourceId,
+            name: newObj.sourceName,
           },
         },
       }, (err, result) => {
@@ -100,31 +100,31 @@ module.exports.updateNew = (title, author, publishedAt, url, sourceId, sourceNam
   });
 });
 
-module.exports.updateNewFields = (title,  author, publishedAt, url, sourceId, sourceName, id) => new Promise((resolve, reject) => {
+module.exports.updateNewFields = filter => new Promise((resolve, reject) => {
   const newObject = {};
-  if (title != null) {
-    newObject.title = title;
+  if (filter.title != null) {
+    newObject.title = filter.title;
   }
-  if (author != null) {
-    newObject.author = author;
+  if (filter.author != null) {
+    newObject.author = filter.author;
   }
-  if (publishedAt != null) {
-    newObject.publishedAt = publishedAt;
+  if (filter.publishedAt != null) {
+    newObject.publishedAt = filter.publishedAt;
   }
-  if (url != null) {
-    newObject.url = url;
+  if (filter.url != null) {
+    newObject.url = filter.url;
   }
-  if (sourceId != null) {
-    newObject.source.Id = sourceId;
+  if (filter.sourceId != null) {
+    newObject.source.Id = filter.sourceId;
   }
-  if (sourceName != null) {
-    newObject.source.name = sourceName;
+  if (filter.sourceName != null) {
+    newObject.source.name = filter.sourceName;
   }
 
   db.getConnection((connection, client) => {
     const collection = connection.collection('news');
     collection.updateOne(
-      { _id: new ObjectId(id) },
+      { _id: new ObjectId(filter.id) },
       { $set: newObject }, (err, result) => {
         if (err) {
           client.close();
@@ -132,7 +132,7 @@ module.exports.updateNewFields = (title,  author, publishedAt, url, sourceId, so
         }
         resolve(result);
         client.close();
-      }
+      },
     );
   });
 });
