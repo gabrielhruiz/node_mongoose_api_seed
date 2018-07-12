@@ -13,6 +13,7 @@ An optimized API REST project seed connecting with mongodb and is securized and 
  - Default environment variables, depending on the environment
  - Default JWT authorization into controllers
  - Multithreading mode on production environment
+ - Airbnb ESlint code style
 
 # Next releases
  - Error manager system

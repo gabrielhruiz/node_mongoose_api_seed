@@ -1,29 +1,27 @@
 /*
 * Author: gabrielhruiz
 * */
-'use strict';
+const conf = require('config');
+const winston = require('winston');
 
-let conf = require('config');
-let winston = require('winston');
-
-let config = conf.get(process.env.NODE_ENV ? process.env.NODE_ENV : 'development');
+const config = conf.get(process.env.NODE_ENV ? process.env.NODE_ENV : 'development');
 module.exports = config;
 
-let logConfig = {
+const logConfig = {
   levels: {
     error: 7,
     warning: 8,
     info: 9,
     chat: 10,
-    debug: 11
+    debug: 11,
   },
   colors: {
     error: 'red',
     warning: 'yellow',
     info: 'white',
     debug: 'blue',
-    chat: 'green'
-  }
+    chat: 'green',
+  },
 };
 
 
@@ -36,17 +34,17 @@ module.exports.logger = new winston.Logger({
       filename: config.logFile,
       handleExceptions: true,
       json: false,
-      maxsize: 5242880, //5MB
+      maxsize: 5242880, // 5MB
       maxFiles: 5,
-      colorize: false
+      colorize: false,
     }),
     new winston.transports.Console({
       level: 'info',
       handleExceptions: true,
       json: false,
       colorize: false,
-      timestamp: false
-    })
+      timestamp: false,
+    }),
   ],
-  exitOnError: false
+  exitOnError: false,
 });

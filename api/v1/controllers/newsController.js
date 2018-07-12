@@ -1,120 +1,123 @@
 /*
 * Author: gabrielhruiz
 * */
-let express = require('express');
-let router = express.Router();
-let newsService = require('./../services/newsService');
-let authenticate = require('./../services/authService').authenticate;
+const express = require('express');
+const newsService = require('./../services/newsService');
+const authenticate = require('./../services/authService');
 
-router.get('/new/:id', function (req, res) {
+const router = express.Router();
 
-    let newId = req.params.id || null;
+router.get('/new/:id', (req, res) => {
+  const newId = req.params.id || null;
 
-    if (newId == null) {
-
-        res.status(400).json("Missing required parameters.");
-    } else {
-        newsService.getNew(newId).then(response => {
-            res.status(200).json(response);
-        }, error => {
-            res.status(500).json(error);
-        });
-    }
-});
-
-router.get('/new', function (req, res) {
-
-    let author = req.query.author || null;
-    let title = req.query.title || null;
-    let publishedAt = req.query.publishedAt || null;
-    let keyword = req.query.keyword || null;
-
-    newsService.getNews(author, title, publishedAt, keyword).then(response => {
-        res.status(200).json(response);
-    }, error => {
-        res.status(500).json(error);
+  if (newId == null) {
+    res.status(400).json('Missing required parameters.');
+  } else {
+    newsService.getNew(newId).then((response) => {
+      res.status(200).json(response);
+    }, (error) => {
+      res.status(500).json(error);
     });
+  }
 });
 
-router.post('/new', authenticate, function (req, res) {
+router.get('/new', (req, res) => {
+  const filter = {
+    author: req.query.author || null,
+    title: req.query.title || null,
+    publishedAt: req.query.publishedAt || null,
+    keyword: req.query.keyword || null,
+  };
 
-    let title = req.body.title || null;
-    let author = req.body.author || null;
-    let publishedAt = req.body.publishedAt || null;
-    let url = req.body.url || null;
-    let sourceId = req.body.sourceId || null;
-    let sourceName = req.body.sourceName || null;
-
-    if (title == null || author == null || publishedAt == null ||
-        url == null || sourceId == null || sourceName == null) {
-
-        res.status(400).json("Missing required parameters.");
-    } else {
-        newsService.createNew(title, author, publishedAt, url, sourceId, sourceName).then(response => {
-            res.status(200).json(response);
-        }, error => {
-            res.status(500).json(error);
-        });
-    }
+  newsService.getNews(filter).then((response) => {
+    res.status(200).json(response);
+  }, (error) => {
+    res.status(500).json(error);
+  });
 });
 
-router.put('/new', authenticate, function (req, res) {
+router.post('/new', authenticate.authenticate, (req, res) => {
+  const newObj = {
+    author: req.query.author || null,
+    title: req.query.title || null,
+    publishedAt: req.query.publishedAt || null,
+    keyword: req.query.keyword || null,
+    url: req.query.url || null,
+    sourceId: req.query.sourceId || null,
+    sourceName: req.query.sourceName || null,
+  };
 
-    let title = req.body.title || null;
-    let author = req.body.author || null;
-    let publishedAt = req.body.publishedAt || null;
-    let url = req.body.url || null;
-    let sourceId = req.body.sourceId || null;
-    let sourceName = req.body.sourceName || null;
-
-    if (title == null || author == null || publishedAt == null) {
-
-        res.status(400).json("Missing required parameters.");
-    } else {
-        newsService.updateNew(title, author, publishedAt, url, sourceId, sourceName).then(response => {
-            res.status(200).json(response);
-        }, error => {
-            res.status(500).json(error);
-        });
-    }
+  if (newObj.title == null || newObj.author == null || newObj.publishedAt == null ||
+    newObj.url == null || newObj.sourceId == null || newObj.sourceName == null) {
+    res.status(400).json('Missing required parameters.');
+  } else {
+    newsService.createNew(newObj)
+      .then((response) => {
+        res.status(200).json(response);
+      }, (error) => {
+        res.status(500).json(error);
+      });
+  }
 });
 
-router.patch('/new/:id', authenticate, function (req, res) {
+router.put('/new', authenticate.authenticate, (req, res) => {
+  const newObj = {
+    author: req.query.author || null,
+    title: req.query.title || null,
+    publishedAt: req.query.publishedAt || null,
+    keyword: req.query.keyword || null,
+    url: req.query.url || null,
+    sourceId: req.query.sourceId || null,
+    sourceName: req.query.sourceName || null,
+  };
 
-    let newId = req.params.id || null;
-    let title = req.body.title || null;
-    let author = req.body.author || null;
-    let publishedAt = req.body.publishedAt || null;
-    let url = req.body.url || null;
-    let sourceId = req.body.sourceId || null;
-    let sourceName = req.body.sourceName || null;
-
-    if (newId == null) {
-
-        res.status(400).json("Missing required parameters.");
-    } else {
-        newsService.updateNewFields(title, author, publishedAt, url, sourceId, sourceName, newId).then(response => {
-            res.status(200).json(response);
-        }, error => {
-            res.status(500).json(error);
-        });
-    }
+  if (newObj.title == null || newObj.author == null || newObj.publishedAt == null) {
+    res.status(400).json('Missing required parameters.');
+  } else {
+    newsService.updateNew(newObj)
+      .then((response) => {
+        res.status(200).json(response);
+      }, (error) => {
+        res.status(500).json(error);
+      });
+  }
 });
 
-router.delete('/new/:id', authenticate, function (req, res) {
+router.patch('/new/:id', authenticate.authenticate, (req, res) => {
+  const filter = {
+    id: req.params.id || null,
+    author: req.body.author || null,
+    title: req.body.title || null,
+    publishedAt: req.body.publishedAt || null,
+    url: req.body.url || null,
+    sourceId: req.body.sourceId || null,
+    sourceName: req.body.sourceName || null,
+  };
 
-    let newId = req.params.id || null;
+  if (filter.newId == null) {
+    res.status(400).json('Missing required parameters.');
+  } else {
+    newsService.updateNewFields(filter)
+      .then((response) => {
+        res.status(200).json(response);
+      }, (error) => {
+        res.status(500).json(error);
+      });
+  }
+});
 
-    if (newId == null) {
+router.delete('/new/:id', authenticate.authenticate, (req, res) => {
+  const newId = req.params.id || null;
 
-        res.status(400).json("Missing required parameters.");
-    } else {
-        newsService.deleteNew(newId).then(response => {
-            res.status(200).json(response);
-        }, error => {
-            res.status(500).json(error);
-        });
-    }
+  if (newId == null) {
+    res.status(400).json('Missing required parameters.');
+  } else {
+    newsService.deleteNew(newId).then((response) => {
+      res.status(200).json(response);
+    }, (error) => {
+      res.status(500).json(error);
+    });
+  }
 });
 
 module.exports = router;
