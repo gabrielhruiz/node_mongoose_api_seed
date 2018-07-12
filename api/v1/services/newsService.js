@@ -4,15 +4,18 @@
 const ObjectId = require('mongodb').ObjectID;
 const db = require('./../../../config/db');
 
+const COLLECTION_NAME = 'news';
+
 module.exports.getNew = id => new Promise((resolve, reject) => {
   db.getConnection((connection, client) => {
-    const collection = connection.collection('news');
-    collection.find({ _id: new ObjectId(id) }).toArray((err, docs) => {
-      if (err) {
+    const collection = connection.collection(COLLECTION_NAME);
+    const query = { _id: new ObjectId(id) };
+    collection.findOne(query, (error, doc) => {
+      if (error) {
         client.close();
-        reject(err);
+        reject();
       }
-      resolve(docs);
+      resolve(doc);
       client.close();
     });
   });
@@ -35,7 +38,7 @@ module.exports.getNews = filter => new Promise((resolve, reject) => {
   }
 
   db.getConnection((connection, client) => {
-    const collection = connection.collection('news');
+    const collection = connection.collection(COLLECTION_NAME);
     collection.find(searchObject).toArray((err, docs) => {
       if (err) {
         client.close();
@@ -49,7 +52,7 @@ module.exports.getNews = filter => new Promise((resolve, reject) => {
 
 module.exports.createNew = newObj => new Promise((resolve, reject) => {
   db.getConnection((connection, client) => {
-    const collection = connection.collection('news');
+    const collection = connection.collection(COLLECTION_NAME);
     collection.insertMany([
       {
         title: newObj.title,
@@ -74,7 +77,7 @@ module.exports.createNew = newObj => new Promise((resolve, reject) => {
 
 module.exports.updateNew = newObj => new Promise((resolve, reject) => {
   db.getConnection((connection, client) => {
-    const collection = connection.collection('news');
+    const collection = connection.collection(COLLECTION_NAME);
     collection.updateOne(
       { author: newObj.author, title: newObj.title, publishedAt: newObj.publishedAt },
       {
@@ -122,7 +125,7 @@ module.exports.updateNewFields = filter => new Promise((resolve, reject) => {
   }
 
   db.getConnection((connection, client) => {
-    const collection = connection.collection('news');
+    const collection = connection.collection(COLLECTION_NAME);
     collection.updateOne(
       { _id: new ObjectId(filter.id) },
       { $set: newObject }, (err, result) => {
@@ -132,14 +135,14 @@ module.exports.updateNewFields = filter => new Promise((resolve, reject) => {
         }
         resolve(result);
         client.close();
-      },
+      }
     );
   });
 });
 
 module.exports.deleteNew = id => new Promise((resolve, reject) => {
   db.getConnection((connection, client) => {
-    const collection = connection.collection('news');
+    const collection = connection.collection(COLLECTION_NAME);
     collection.deleteOne({ _id: new ObjectId(id) }, (err, result) => {
       if (err) {
         client.close();
