@@ -9,16 +9,13 @@ const router = express.Router();
 
 router.get('/new/:id', (req, res) => {
   const newId = req.params.id || null;
-
   if (newId == null) {
-    res.status(400).json('Missing required parameters.');
-  } else {
-    newsService.getNew(newId).then((response) => {
-      res.status(200).json(response);
-    }, (error) => {
-      res.status(500).json(error);
-    });
+    return res.status(400).json('Missing required parameters.');
   }
+
+  return newsService.getNew(newId)
+    .then(response => res.status(200).json(response))
+    .catch(error => res.status(500).json(error));
 });
 
 router.get('/new', (req, res) => {
@@ -29,11 +26,9 @@ router.get('/new', (req, res) => {
     keyword: req.query.keyword || null,
   };
 
-  newsService.getNews(filter).then((response) => {
-    res.status(200).json(response);
-  }, (error) => {
-    res.status(500).json(error);
-  });
+  newsService.getNews(filter)
+    .then((newa) => res.status(200).json(newa))
+    .catch((error) => res.status(500).json(error));
 });
 
 router.post('/new', authenticate.authenticate, (req, res) => {
@@ -47,20 +42,18 @@ router.post('/new', authenticate.authenticate, (req, res) => {
     sourceName: req.query.sourceName || null,
   };
 
-  if (newObj.title == null || newObj.author == null || newObj.publishedAt == null ||
-    newObj.url == null || newObj.sourceId == null || newObj.sourceName == null) {
-    res.status(400).json('Missing required parameters.');
-  } else {
-    newsService.createNew(newObj)
-      .then((response) => {
-        res.status(200).json(response);
-      }, (error) => {
-        res.status(500).json(error);
-      });
+  if (!newObj.title || !newObj.author || !newObj.publishedAt ||
+    !newObj.url || !newObj.sourceId || !newObj.sourceName) {
+    return res.status(400).json('Missing required parameters.');
   }
+
+  return newsService.createNew(newObj)
+    .then((newObj) => res.status(200).json(newObj))
+    .catch((error) => res.status(500).json(error));
 });
 
-router.put('/new', authenticate.authenticate, (req, res) => {
+router.put('/new/:id', authenticate.authenticate, (req, res) => {
+  const id = req.params.id || null;
   const newObj = {
     author: req.query.author || null,
     title: req.query.title || null,
@@ -71,16 +64,13 @@ router.put('/new', authenticate.authenticate, (req, res) => {
     sourceName: req.query.sourceName || null,
   };
 
-  if (newObj.title == null || newObj.author == null || newObj.publishedAt == null) {
-    res.status(400).json('Missing required parameters.');
-  } else {
-    newsService.updateNew(newObj)
-      .then((response) => {
-        res.status(200).json(response);
-      }, (error) => {
-        res.status(500).json(error);
-      });
+  if (!Object.keys(newObj).length || !id) {
+    return res.status(400).json('Missing required parameters.');
   }
+
+  return newsService.updateNew(newObj)
+    .then((response) => res.status(200).json(response))
+    .catch((error) => res.status(500).json(error));
 });
 
 router.patch('/new/:id', authenticate.authenticate, (req, res) => {
@@ -94,30 +84,25 @@ router.patch('/new/:id', authenticate.authenticate, (req, res) => {
     sourceName: req.body.sourceName || null,
   };
 
-  if (filter.newId == null) {
-    res.status(400).json('Missing required parameters.');
-  } else {
-    newsService.updateNewFields(filter)
-      .then((response) => {
-        res.status(200).json(response);
-      }, (error) => {
-        res.status(500).json(error);
-      });
+  if (filter.id == null) {
+    return res.status(400).json('Missing required parameters.');
   }
+
+  return newsService.updateNewFields(filter)
+    .then((response) => res.status(200).json(response))
+    .catch((error) => res.status(500).json(error));
 });
 
 router.delete('/new/:id', authenticate.authenticate, (req, res) => {
   const newId = req.params.id || null;
 
   if (newId == null) {
-    res.status(400).json('Missing required parameters.');
-  } else {
-    newsService.deleteNew(newId).then((response) => {
-      res.status(200).json(response);
-    }, (error) => {
-      res.status(500).json(error);
-    });
+    return res.status(400).json('Missing required parameters.');
   }
+
+  return newsService.deleteNew(newId)
+    .then((response) => res.status(200).json(response))
+    .catch((error) => res.status(500).json(error));
 });
 
 module.exports = router;

@@ -2,26 +2,16 @@
 * Author: gabrielhruiz
 * */
 const ObjectId = require('mongodb').ObjectID;
-const db = require('./../../../config/db');
+const db = require('./../../../config/connections/mongodb');
+const { COLLECTIONS } = require('./../enums/database');
 
-const COLLECTION_NAME = 'news';
+module.exports.getNew = (id) => {
+  const newsCollection = db.get().collection(COLLECTIONS.NEWS);
+  const query = { _id: new ObjectId(id) };
+  return newsCollection.findOne(query);
+};
 
-module.exports.getNew = id => new Promise((resolve, reject) => {
-  db.getConnection((connection, client) => {
-    const collection = connection.collection(COLLECTION_NAME);
-    const query = { _id: new ObjectId(id) };
-    collection.findOne(query, (error, doc) => {
-      if (error) {
-        client.close();
-        reject();
-      }
-      resolve(doc);
-      client.close();
-    });
-  });
-});
-
-module.exports.getNews = filter => new Promise((resolve, reject) => {
+module.exports.getNews = filter => {
   const searchObject = {};
 
   if (filter.author != null) {
@@ -37,73 +27,21 @@ module.exports.getNews = filter => new Promise((resolve, reject) => {
     searchObject.keyword = filter.keyword;
   }
 
-  db.getConnection((connection, client) => {
-    const collection = connection.collection(COLLECTION_NAME);
-    collection.find(searchObject).toArray((err, docs) => {
-      if (err) {
-        client.close();
-        reject(err);
-      }
-      resolve(docs);
-      client.close();
-    });
-  });
-});
+  const newsCollection = db.get().collection(COLLECTIONS.NEWS);
+  return newsCollection.find(searchObject).toArray();
+};
 
-module.exports.createNew = newObj => new Promise((resolve, reject) => {
-  db.getConnection((connection, client) => {
-    const collection = connection.collection(COLLECTION_NAME);
-    collection.insertMany([
-      {
-        title: newObj.title,
-        author: newObj.author,
-        publishedAt: newObj.publishedAt,
-        url: newObj.url,
-        source: {
-          id: newObj.sourceId,
-          name: newObj.sourceName,
-        },
-      },
-    ], (err, result) => {
-      if (err) {
-        client.close();
-        reject(err);
-      }
-      resolve(result);
-      client.close();
-    });
-  });
-});
+module.exports.createNew = newObj => {
+  const newsCollection = db.get().collection(COLLECTIONS.NEWS);
+  return newsCollection.insertOne(newObj);
+};
 
-module.exports.updateNew = newObj => new Promise((resolve, reject) => {
-  db.getConnection((connection, client) => {
-    const collection = connection.collection(COLLECTION_NAME);
-    collection.updateOne(
-      { author: newObj.author, title: newObj.title, publishedAt: newObj.publishedAt },
-      {
-        $set: {
-          title: newObj.title,
-          author: newObj.author,
-          publishedAt: newObj.publishedAt,
-          url: newObj.url,
-          source: {
-            id: newObj.sourceId,
-            name: newObj.sourceName,
-          },
-        },
-      }, (err, result) => {
-        if (err) {
-          client.close();
-          reject(err);
-        }
-        resolve(result);
-        client.close();
-      }
-    );
-  });
-});
+module.exports.updateNew = (id, newObj) => {
+  const newsCollection = db.get().collection(COLLECTIONS.NEWS);
+  return newsCollection.update({ _id: new Object(id) }, { $set: newObj });
+};
 
-module.exports.updateNewFields = filter => new Promise((resolve, reject) => {
+module.exports.updateNewFields = filter => {
   const newObject = {};
   if (filter.title != null) {
     newObject.title = filter.title;
@@ -124,32 +62,11 @@ module.exports.updateNewFields = filter => new Promise((resolve, reject) => {
     newObject.source.name = filter.sourceName;
   }
 
-  db.getConnection((connection, client) => {
-    const collection = connection.collection(COLLECTION_NAME);
-    collection.updateOne(
-      { _id: new ObjectId(filter.id) },
-      { $set: newObject }, (err, result) => {
-        if (err) {
-          client.close();
-          reject(err);
-        }
-        resolve(result);
-        client.close();
-      }
-    );
-  });
-});
+  const newsCollection = db.get().collection(COLLECTIONS.NEWS);
+  return newsCollection.update({ _id: new Object(filter.id) }, { $set: newObject });
+};
 
-module.exports.deleteNew = id => new Promise((resolve, reject) => {
-  db.getConnection((connection, client) => {
-    const collection = connection.collection(COLLECTION_NAME);
-    collection.deleteOne({ _id: new ObjectId(id) }, (err, result) => {
-      if (err) {
-        client.close();
-        reject(err);
-      }
-      resolve(result);
-      client.close();
-    });
-  });
-});
+module.exports.deleteNew = id => {
+  const newsCollection = db.get().collection(COLLECTIONS.NEWS);
+  return newsCollection.remove({ _id: new Object(id) });
+};

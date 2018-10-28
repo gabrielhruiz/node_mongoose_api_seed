@@ -3,7 +3,7 @@
 * */
 const config = require('./index');
 
-const mongodb = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 // Connection URL
 const { db: { url } } = config;
@@ -15,14 +15,17 @@ const configuration = {
   poolSize: 50,
 };
 
-const getConnection = (callback) => {
-  mongodb.MongoClient.connect(url, configuration, (err, client) => {
-    if (err) {
-      config.logger.error(`unexpected error getCollection: ${err}`);
-      return err;
-    }
-    const db = client.db(dbName);
-    return callback(db, client);
-  });
-};
-module.exports.getConnection = getConnection;
+let database = null;
+
+MongoClient.connect(url, configuration, (err, client) => {
+  if (err) {
+    config.logger.error(`unexpected error getCollection: ${err}`);
+    return err;
+  }
+  config.logger.info(`Database connection successfully: ${dbName}`);
+  database = client.db(dbName);
+  return database;
+});
+
+exports.db = database;
+

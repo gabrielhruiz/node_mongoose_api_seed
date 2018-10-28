@@ -4,7 +4,7 @@ development:
   logFile: "./logs/dev.log"
   newsApiKey: NEWS_API_APIKEY
   db:
+    url: 'mongodb://localhost:27017/'
     name: 'coin-news'
-    url: 'mongodb://localhost:27017'
   cron:
     dummyCron: '*/30 * * * *'

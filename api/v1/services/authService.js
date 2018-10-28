@@ -2,18 +2,16 @@
 * Author: gabrielhruiz
 * */
 const config = require('./../../../config');
-const db = require('./../../../config/db');
+const db = require('./../../../config/connections/mongodb');
 const jwt = require('jsonwebtoken');
 
-const COLLECTION_NAME = 'user';
+const { COLLECTIONS } = require('../enums/database');
 
-const generateToken = userId => new Promise((resolve) => {
-  resolve(jwt.sign({
-    id: userId,
-    role: 'user',
-  }, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn,
-  }));
+const generateToken = userId => jwt.sign({
+  id: userId,
+  role: 'user',
+}, config.jwt.secret, {
+  expiresIn: config.jwt.expiresIn,
 });
 
 module.exports.authenticate = (req, res, next) => {
@@ -28,40 +26,24 @@ module.exports.authenticate = (req, res, next) => {
 };
 
 module.exports.login = (mail, password) => new Promise((resolve, reject) => {
-  db.getConnection((connection, client) => {
-    const collection = connection.collection('user');
-    collection.findOne({ mail, password }, (err, user) => {
-      if (err) {
-        client.close();
-        reject(err);
+  const newsCollection = db.get().collection(COLLECTIONS.USER);
+  newsCollection.findOne({ mail, password })
+    .thne((user) => {
+      if (!user) {
+        return reject(new Error('Bad mail or password.'));
       }
-      if (user == null) {
-        client.close();
-        reject(new Error('Bad mail or password.'));
-      }
-      generateToken(user._id.toString()).then((token) => {
-        resolve(token);
-        client.close();
-      }, (error) => {
-        client.close();
-        reject(error);
-      });
-    });
-  });
+
+      return resolve(generateToken(user._id.toString()));
+    })
+    .catch((findErr) => reject(findErr));
 });
 
 module.exports.signup = (mail, password, name) => new Promise((resolve, reject) => {
-  db.getConnection((connection, client) => {
-    const collection = connection.collection(COLLECTION_NAME);
-    collection.findOne({ mail }, (err, user) => {
-      if (err) {
-        client.close();
-        reject(err);
-      }
-
+  const newsCollection = db.get().collection(COLLECTIONS.USER);
+  newsCollection.findOne({ mail })
+    .thne((user) => {
       if (user) {
-        client.close();
-        reject(new Error('User already exists.'));
+        return reject(new Error('User already exists.'));
       }
 
       const userObject = {
@@ -70,20 +52,9 @@ module.exports.signup = (mail, password, name) => new Promise((resolve, reject) 
         password,
         signUpDate: new Date(),
       };
-      collection.insertOne(userObject, (insertError, insert) => {
-        if (insertError) {
-          client.close();
-          reject(insertError);
-        }
-
-        generateToken(insert.insertedId).then((token) => {
-          resolve(token);
-          client.close();
-        }, (error) => {
-          client.close();
-          reject(error);
-        });
-      });
-    });
-  });
+      return newsCollection.insertOne(userObject)
+        .then((insertedUser) => resolve(generateToken(insertedUser._id.toString())))
+        .catch((insertErr) => reject(insertErr));
+    })
+    .catch((findErr) => reject(findErr));
 });

@@ -6,7 +6,6 @@
   "description": "API",
   "private": true,
   "dependencies": {
-    "async": "^2.5.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.16.1",
     "chai": "^3.5.0",
@@ -24,15 +23,17 @@
     "lodash": "^4.17.4",
     "mocha": "^3.2.0",
     "moment": "^2.19.4",
+    "mongodb": "^3.0.1",
     "normalize-strings": "^1.1.0",
     "passport": "^0.3.2",
     "progress": "^2.0.0",
     "request": "^2.79.0",
     "sanitize-html": "^1.16.1",
-    "mongodb": "^3.0.1",
     "winston": "^2.3.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.7.0"
+  },
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
     "start": "node server.js"

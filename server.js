@@ -16,6 +16,8 @@ const auth = require('./api/v1/controllers/authController');
 const news = require('./api/v1/controllers/newsController');
 const cronService = require('./api/v1/services/cronService');
 
+const db = require('./config/connections/mongodb');
+
 if (!fs.existsSync('./logs')) {
   fs.mkdirSync('./logs');
 }
@@ -77,13 +79,21 @@ if (process.env.NODE_ENV === 'production' && cluster.isMaster && process.env.MUL
     });
   });
 
-  // Start the server
-  const serverPort = process.env.PORT || config.port;
-  const server = app.listen(serverPort, () => {
-    config.logger.info('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-    config.logger.info('Running in %s mode', app.get('env'));
+  // Mongodb connection
+  db.connect((err) => {
+    if (err) {
+      config.logger.error('Unable to connect to Mongo.');
+      process.exit(1);
+    } else {
+      // Start the server
+      const serverPort = process.env.PORT || config.port;
+      const server = app.listen(serverPort, () => {
+        config.logger.info('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+        config.logger.info('Running in %s mode', app.get('env'));
+      });
+      server.timeout = 24 * 3600 * 1000; // 24h
+    }
   });
-  server.timeout = 24 * 3600 * 1000; // 24h
 }
 
 // Cron task
