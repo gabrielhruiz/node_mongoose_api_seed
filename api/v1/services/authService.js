@@ -6,13 +6,17 @@ const db = require('./../../../config/connections/mongodb');
 const jwt = require('jsonwebtoken');
 
 const { COLLECTIONS } = require('../enums/database');
+const SECRET = config.jwt.secret;
 
-const generateToken = userId => jwt.sign({
-  id: userId,
-  role: 'user',
-}, config.jwt.secret, {
-  expiresIn: config.jwt.expiresIn,
-});
+const generateToken = userId => {
+  const payload = { userId, role: 'user' };
+  const options = { expiresIn: config.jwt.expiresIn };
+  try {
+    return jwt.sign(payload, SECRET, options);
+  } catch (jwtErr) {
+    throw new Error(jwtErr.toString());
+  }
+};
 
 module.exports.authenticate = (req, res, next) => {
   try {
@@ -28,12 +32,13 @@ module.exports.authenticate = (req, res, next) => {
 module.exports.login = (mail, password) => new Promise((resolve, reject) => {
   const newsCollection = db.get().collection(COLLECTIONS.USER);
   newsCollection.findOne({ mail, password })
-    .thne((user) => {
+    .then((user) => {
       if (!user) {
         return reject(new Error('Bad mail or password.'));
       }
 
-      return resolve(generateToken(user._id.toString()));
+      const accessToken = generateToken(user._id.toString());
+      return resolve({ accessToken });
     })
     .catch((findErr) => reject(findErr));
 });
@@ -41,7 +46,7 @@ module.exports.login = (mail, password) => new Promise((resolve, reject) => {
 module.exports.signup = (mail, password, name) => new Promise((resolve, reject) => {
   const newsCollection = db.get().collection(COLLECTIONS.USER);
   newsCollection.findOne({ mail })
-    .thne((user) => {
+    .then((user) => {
       if (user) {
         return reject(new Error('User already exists.'));
       }

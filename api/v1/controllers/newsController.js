@@ -7,7 +7,7 @@ const authenticate = require('./../services/authService');
 
 const router = express.Router();
 
-router.get('/new/:id', (req, res) => {
+router.get('/:id', authenticate.authenticate, (req, res) => {
   const newId = req.params.id || null;
   if (newId == null) {
     return res.status(400).json('Missing required parameters.');
@@ -18,7 +18,7 @@ router.get('/new/:id', (req, res) => {
     .catch(error => res.status(500).json(error));
 });
 
-router.get('/new', (req, res) => {
+router.get('/', authenticate.authenticate, (req, res) => {
   const filter = {
     author: req.query.author || null,
     title: req.query.title || null,
@@ -31,19 +31,21 @@ router.get('/new', (req, res) => {
     .catch((error) => res.status(500).json(error));
 });
 
-router.post('/new', authenticate.authenticate, (req, res) => {
+router.post('/', authenticate.authenticate, (req, res) => {
   const newObj = {
-    author: req.query.author || null,
-    title: req.query.title || null,
-    publishedAt: req.query.publishedAt || null,
-    keyword: req.query.keyword || null,
-    url: req.query.url || null,
-    sourceId: req.query.sourceId || null,
-    sourceName: req.query.sourceName || null,
+    author: req.body.author || null,
+    title: req.body.title || null,
+    publishedAt: req.body.publishedAt || null,
+    keyword: req.body.keyword || null,
+    url: req.body.url || null,
+    source: {
+      id: req.body.source.id || null,
+      name: req.body.source.name || null,
+    }
   };
 
   if (!newObj.title || !newObj.author || !newObj.publishedAt ||
-    !newObj.url || !newObj.sourceId || !newObj.sourceName) {
+    !newObj.url || !newObj.source.id || !newObj.source.name) {
     return res.status(400).json('Missing required parameters.');
   }
 
@@ -52,16 +54,18 @@ router.post('/new', authenticate.authenticate, (req, res) => {
     .catch((error) => res.status(500).json(error));
 });
 
-router.put('/new/:id', authenticate.authenticate, (req, res) => {
+router.put('/:id', authenticate.authenticate, (req, res) => {
   const id = req.params.id || null;
   const newObj = {
-    author: req.query.author || null,
-    title: req.query.title || null,
-    publishedAt: req.query.publishedAt || null,
-    keyword: req.query.keyword || null,
-    url: req.query.url || null,
-    sourceId: req.query.sourceId || null,
-    sourceName: req.query.sourceName || null,
+    author: req.body.author || null,
+    title: req.body.title || null,
+    publishedAt: req.body.publishedAt || null,
+    keyword: req.body.keyword || null,
+    url: req.body.url || null,
+    source: {
+      id: req.body.source.id || null,
+      name: req.body.source.name || null,
+    }
   };
 
   if (!Object.keys(newObj).length || !id) {
@@ -73,7 +77,7 @@ router.put('/new/:id', authenticate.authenticate, (req, res) => {
     .catch((error) => res.status(500).json(error));
 });
 
-router.patch('/new/:id', authenticate.authenticate, (req, res) => {
+router.patch('/:id', authenticate.authenticate, (req, res) => {
   const filter = {
     id: req.params.id || null,
     author: req.body.author || null,
@@ -93,7 +97,7 @@ router.patch('/new/:id', authenticate.authenticate, (req, res) => {
     .catch((error) => res.status(500).json(error));
 });
 
-router.delete('/new/:id', authenticate.authenticate, (req, res) => {
+router.delete('/:id', authenticate.authenticate, (req, res) => {
   const newId = req.params.id || null;
 
   if (newId == null) {

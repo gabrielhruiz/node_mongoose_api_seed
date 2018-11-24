@@ -3,6 +3,8 @@ development:
   port: 8085
   logFile: "./logs/dev.log"
   newsApiKey: NEWS_API_APIKEY
+  jwt:
+    secret: 'YOUR_SECRET'
   db:
     url: 'mongodb://localhost:27017/'
     name: 'coin-news'

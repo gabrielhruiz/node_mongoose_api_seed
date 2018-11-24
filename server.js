@@ -69,7 +69,7 @@ if (process.env.NODE_ENV === 'production' && cluster.isMaster && process.env.MUL
 
   // Routes
   app.use('/api/v1', bodyParserUrl, bodyParserJson, auth);
-  app.use('/api/v1', bodyParserUrl, bodyParserJson, news);
+  app.use('/api/v1/new', bodyParserUrl, bodyParserJson, news);
 
   app.use('/', (req, res) => {
     res.json({
