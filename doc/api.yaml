@@ -1,261 +1,23 @@
 swagger: '2.0'
 info:
-  title: dummy-api
-  description: Dummy API REST.
+  title: api
+  description: API REST.
   version: "0.0.1"
-host: localhost:8085
+host: localhost:8080
 schemes:
   - http
-basePath: /api/v1
+basePath: /v1
 produces:
   - application/json
 consumes:
- - application/x-www-form-urlencoded
- - multipart/form-data
  - application/json
 paths:
-  /new:
-    get:
-      summary: New.
-      description: Get a list of news.
-      parameters:
-        - name: author
-          in: query
-          type: string
-          required: false
-        - name: title
-          in: query
-          type: string
-          required: false
-        - name: publishedAt
-          in: query
-          type: string
-          format: datetime
-          required: false
-        - name: keyword
-          in: query
-          type: string
-          required: false
-      tags:
-        - New
-      responses:
-        200:
-          description: New object list.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/New'
-        500:
-          description: Unexpected error provided by backend service.
-          schema:
-            $ref: '#/definitions/Error'
-    post:
-      parameters:
-        - name: title
-          in: formData
-          type: string
-          required: true
-        - name: author
-          in: formData
-          type: string
-          required: true
-        - name: publishedAt
-          in: formData
-          type: string
-          format: datetime
-          required: true
-        - name: url
-          in: formData
-          type: string
-          format: url
-        - name: sourceId
-          in: formData
-          type: string
-        - name: sourceName
-          in: formData
-          type: string
-      tags:
-        - New
-      responses:
-        200:
-          description: New object.
-          schema:
-            $ref: '#/definitions/New'
-        400:
-          description: Missing required parameters error.
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: Not athenticate error.
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Unexpected error provided by backend service.
-          schema:
-            $ref: '#/definitions/Error'
-    put:
-      parameters:
-        - name: title
-          in: formData
-          type: string
-          required: true
-        - name: author
-          in: formData
-          type: string
-          required: true
-        - name: publishedAt
-          in: formData
-          type: string
-          format: datetime
-          required: true
-        - name: url
-          in: formData
-          type: string
-          format: url
-          required: true
-        - name: sourceId
-          in: formData
-          type: string
-          required: true
-        - name: sourceName
-          in: formData
-          type: string
-          required: true
-      tags:
-        - New
-      responses:
-        200:
-          description: New object.
-          schema:
-            $ref: '#/definitions/New'
-        400:
-          description: Missing required parameters error.
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: Not athenticate error.
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Unexpected error provided by backend service.
-          schema:
-            $ref: '#/definitions/Error'
-  /new/{id}:
-    get:
-      summary: New.
-      description: Get a new.
-      parameters:
-        - name: id
-          in: path
-          type: string
-          required: true
-      tags:
-        - New
-      responses:
-        200:
-          description: New object.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/New'
-        400:
-          description: Missing required parameters error.
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Unexpected error provided by backend service.
-          schema:
-            $ref: '#/definitions/Error'
-    patch:
-      summary: Update a new.
-      description: Update some fields of a new.
-      parameters:
-        - name: id
-          in: path
-          type: string
-          required: true
-        - name: title
-          in: formData
-          type: string
-          required: false
-        - name: author
-          in: formData
-          type: string
-          required: false
-        - name: publishedAt
-          in: formData
-          type: string
-          format: datetime
-          required: false
-        - name: url
-          in: formData
-          type: string
-          format: url
-          required: false
-        - name: sourceId
-          in: formData
-          type: string
-          required: false
-        - name: sourceName
-          in: formData
-          type: string
-          required: false
-      tags:
-        - New
-      responses:
-        200:
-          description: New object.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/New'
-        400:
-          description: Missing required parameters error.
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: Not authenticate error.
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Unexpected error provided by backend service.
-          schema:
-            $ref: '#/definitions/Error'
-    delete:
-      summary: New.
-      description: Get a new.
-      parameters:
-        - name: id
-          in: path
-          type: string
-          required: true
-      tags:
-        - New
-      responses:
-        200:
-          description: New object.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/New'
-        400:
-          description: Missing required parameters error.
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: Not authenticate error.
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Unexpected error provided by backend service.
-          schema:
-            $ref: '#/definitions/Error'
   /login:
     post:
       summary: Login.
       description: Get token after login.
       parameters:
-        - name: mail
+        - name: email
           in: formData
           type: string
           required: true
@@ -283,7 +45,7 @@ paths:
       summary: Sign up.
       description: New users registration.
       parameters:
-        - name: mail
+        - name: email
           in: formData
           type: string
           required: true
@@ -311,29 +73,31 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 definitions:
-  New:
+  User:
     type: object
     properties:
-      author:
+      role:
         type: string
-      title:
-        type: string
-      publishedAt:
-        type: string
-        format: datetime
-      url:
-        type: string
-        format: url
-      source:
+      profile:
         type: object
-        $ref: '#/definitions/Source'
-  Source:
-    type: object
-    properties:
-      id:
+        properties:
+          naem:
+            type: string
+          email:
+            type: string
+            format: email
+          password:
+            type: date
+      api_key:
         type: string
-      name:
+      refresh_token:
         type: string
+      last_login:
+        type: date
+      createdAt:
+        type: date
+      updatedAt:
+        type: date
   Error:
     type: object
     properties:
