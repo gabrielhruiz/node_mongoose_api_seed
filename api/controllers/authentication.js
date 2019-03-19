@@ -4,6 +4,7 @@
 const express = require('express');
 
 const authService = require('../services/authentication');
+const userService = require('../services/user');
 
 const logger = require('../../config/logger');
 const Error = require('../error');
@@ -19,7 +20,11 @@ router.post('/login', (req, res) => {
   }
 
   return authService.login(email, password)
-    .then((credentials) => res.status(200).json(credentials))
+    .then((user) => {
+      const credentials = user.toObject();
+      credentials.access_token = userService.generateAccessToken(credentials._id);
+      return res.status(200).json(credentials);
+    })
     .catch((error) => {
       logger.error(`${req.method} ${req.originalUrl}: ${JSON.stringify(error)}`);
       return res.status(error.status || 500).json(error);
@@ -39,7 +44,7 @@ router.post('/signup', (req, res) => {
     .catch((error) => {
       logger.error(`${req.method} ${req.originalUrl}: ${JSON.stringify(error)}`);
       return res.status(error.status || 500).json(error);
-    });;
+    });
 });
 
 module.exports = router;

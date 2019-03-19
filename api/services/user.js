@@ -24,9 +24,15 @@ const generateRefreshToken = userId => {
   }
 };
 
-exports.getUser = (query = {}) => {
+const getUser = (query = {}) => {
   const { conditions = {}, populates = [], options = {}, sorter = {} } = query;
   const result = User.findOne(conditions, options).sort(sorter);
+  return populates.reduce((acc, populate) => acc.populate(populate), result);
+};
+
+const getUserList = (query = {}) => {
+  const { conditions = {}, populates = [], options = {}, sorter = {} } = query;
+  const result = User.find(conditions, options).sort(sorter);
   return populates.reduce((acc, populate) => acc.populate(populate), result);
 };
 
@@ -36,14 +42,13 @@ const updateUser = (query = {}) => {
   return populates.reduce((acc, populate) => acc.populate(populate), result);
 };
 
-exports.createUser = (userData) => new Promise((resolve, reject) => {
+const createUser = (userData) => new Promise((resolve, reject) => {
   const { profile } = userData;
   const newUser = new User({ profile, role: 'USER' });
   return newUser.save()
     .then((user) => {
-      const access_token = generateAccessToken(user._id);
       const refresh_token = generateRefreshToken(user._id);
-      const update = { access_token, refresh_token };
+      const update = { refresh_token };
       return updateUser({
         condition: { _id: user._id },
         update,
@@ -53,3 +58,15 @@ exports.createUser = (userData) => new Promise((resolve, reject) => {
     .then((user) => resolve(user))
     .catch((error) => reject(error));
 });
+
+const deleteUser = (query) => {
+  const { conditions, options } = query;
+  return User.findOneAndRemove(conditions, options);
+};
+
+exports.getUser = getUser;
+exports.getUserList = getUserList;
+exports.createUser = createUser;
+exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
+exports.generateAccessToken = generateAccessToken;

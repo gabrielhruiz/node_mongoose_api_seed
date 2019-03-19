@@ -25,9 +25,6 @@ const userSchema = new Schema(
       required: true
     },
     profile: profileSchema,
-    api_key: {
-      type: Schema.Types.String
-    },
     refresh_token: {
       type: Schema.Types.String
     },
