@@ -13,6 +13,7 @@ dbConfig.loadDB();
 
 const auth = require('./api/controllers/authentication');
 const user = require('./api/controllers/user');
+const cols = require('./api/controllers/kawaiiColumn');
 
 if (!fs.existsSync('./logs')) {
   fs.mkdirSync('./logs');
@@ -37,7 +38,7 @@ const bodyParserUrl = bodyParser.urlencoded({
 
 // Routes
 const API_VERSION = process.env.API_VERSION;
-app.use(`/${API_VERSION}`, bodyParserUrl, bodyParserJson, [auth, user]);
+app.use(`/${API_VERSION}`, bodyParserUrl, bodyParserJson, [auth, user, cols]);
 
 app.use('/', (req, res) => {
   res.json({
