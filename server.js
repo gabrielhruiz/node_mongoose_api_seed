@@ -5,14 +5,17 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const compression = require('compression');
 const dotenv = require('dotenv');
+
 dotenv.config();
 
 const packageJson = require('./package.json');
 const { dbConfig, logger } = require('./config');
+
 dbConfig.loadDB();
 
 const auth = require('./api/controllers/authentication');
 const user = require('./api/controllers/user');
+const kawaii = require('./api/controllers/kawaii');
 
 if (!fs.existsSync('./logs')) {
   fs.mkdirSync('./logs');
@@ -36,8 +39,8 @@ const bodyParserUrl = bodyParser.urlencoded({
 });
 
 // Routes
-const API_VERSION = process.env.API_VERSION;
-app.use(`/${API_VERSION}`, bodyParserUrl, bodyParserJson, [auth, user]);
+const { API_VERSION } = process.env;
+app.use(`/${API_VERSION}`, bodyParserUrl, bodyParserJson, [auth, user, kawaii]);
 
 app.use('/', (req, res) => {
   res.json({
@@ -47,7 +50,7 @@ app.use('/', (req, res) => {
   });
 });
 
-const PORT = process.env.PORT;
+const { PORT } = process.env;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const server = app.listen(PORT, () => {
   logger.info(`Your server is listening on port ${PORT} (http://localhost:${PORT})`);
