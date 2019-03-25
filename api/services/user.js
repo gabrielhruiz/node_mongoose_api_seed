@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
 
-const User = require('../models/User');
+const User = require('../models/user');
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES = process.env.JWT_EXPIRES;
+const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
 
 const generateAccessToken = userId => {
   const payload = { userId, role: 'USER' };
-  const options = { expiresIn: JWT_EXPIRES };
+  const options = { expiresIn: JWT_EXPIRATION };
   try {
     return jwt.sign(payload, JWT_SECRET, options);
   } catch (jwtErr) {
