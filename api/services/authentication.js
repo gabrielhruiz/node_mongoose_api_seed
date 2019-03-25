@@ -5,7 +5,7 @@ const userService = require('./user');
 
 const Error = require('./../error');
 
-module.exports.login = (email, password) => new Promise((resolve, reject) => userService.getUser({ 'profile.email': email })
+module.exports.login = (email, password) => new Promise((resolve, reject) => userService.getUser({ conditions: { 'profile.email': email } })
   .then((user) => {
     if (!user) {
       const error = Error.generateError(401, 'Bad email', { id: 'BAD_EMAIL' });
