@@ -16,9 +16,9 @@ An optimized API REST project seed connecting with mongodb and is securized and 
 # Get started
 Add into project root a dot env file with the next lines:
 
-PORT=8080
-API_VERSION=v1
-JWT_SECRET=my_jwt_secret
-JWT_EXPIRATION=1d
-DB_NAME=database
-MONGO_URI=mongodb://localhost:27017/database
+ - PORT=8080
+ - API_VERSION=v1
+ - JWT_SECRET=my_jwt_secret
+ - JWT_EXPIRATION=1d
+ - DB_NAME=database
+ - MONGO_URI=mongodb://localhost:27017/database
