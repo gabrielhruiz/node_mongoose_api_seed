@@ -4,7 +4,7 @@ const Error = require('../error');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-module.exports.authenticate = (req, res, next) => {
+exports.jwtAuthenticate = (req, res, next) => {
   try {
     const options = { clockTolerance: 60 };
     const decoded = jwt.verify(req.headers.authorization.replace(/^Bearer\s/, ''),

@@ -3,14 +3,13 @@
 * */
 const express = require('express');
 
-const userHelper = require('../middlewares/authentication');
 const userService = require('../services/user');
 
 const logger = require('../../config/logger');
 
 const router = express.Router();
 
-router.get('/user', userHelper.authenticate, (req, res) => {
+router.get('/user', (req, res) => {
   const conditions = req.query;
   if (conditions.name) {
     conditions['profile.name'] = conditions.name;
@@ -25,7 +24,7 @@ router.get('/user', userHelper.authenticate, (req, res) => {
     });
 });
 
-router.get('/user/:id', userHelper.authenticate, (req, res) => {
+router.get('/user/:id', (req, res) => {
   const id = req.params.id === 'me' ? req.payload.userId : req.params.id;
   const query = { conditions: { _id: id } };
   return userService.getUser(query)
@@ -36,7 +35,7 @@ router.get('/user/:id', userHelper.authenticate, (req, res) => {
     });
 });
 
-router.post('/user', userHelper.authenticate, (req, res) => {
+router.post('/user', (req, res) => {
   const userData = req.body;
   return userService.createUser(userData)
     .then((user) => res.status(200).json(user))
@@ -46,7 +45,7 @@ router.post('/user', userHelper.authenticate, (req, res) => {
     });
 });
 
-router.put('/user/:id', userHelper.authenticate, (req, res) => {
+router.put('/user/:id', (req, res) => {
   const userData = req.body;
   const id = req.params.id === 'me' ? req.payload.userId : req.params.id;
   const query = { conditions: { _id: id }, update: userData };
@@ -58,7 +57,7 @@ router.put('/user/:id', userHelper.authenticate, (req, res) => {
     });
 });
 
-router.delete('/user/:id', userHelper.authenticate, (req, res) => {
+router.delete('/user/:id', (req, res) => {
   const id = req.params.id;
   const query = { conditions: { _id: id } };
   return userService.deleteUser(query)
