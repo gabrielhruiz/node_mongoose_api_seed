@@ -4,10 +4,12 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const compression = require('compression');
 const dotenv = require('dotenv');
+
 dotenv.config();
 
 const packageJson = require('./package.json');
 const { dbConfig, logger, router } = require('./config');
+
 dbConfig.loadDB();
 
 if (!fs.existsSync('./logs')) {
