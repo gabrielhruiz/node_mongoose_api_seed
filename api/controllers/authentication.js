@@ -40,7 +40,7 @@ router.post('/signup', (req, res) => {
   }
 
   return authService.signup(email, password, name)
-    .then((credentials) => res.status(200).json(credentials))
+    .then(credentials => res.status(200).json(credentials))
     .catch((error) => {
       logger.error(`${req.method} ${req.originalUrl}: ${JSON.stringify(error)}`);
       return res.status(error.status || 500).json(error);

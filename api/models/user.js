@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
+const { ROLES } = require('../enums/user');
+
 const { Schema } = mongoose;
+
 const profileSchema = new Schema(
   {
     name: {
@@ -17,11 +20,12 @@ const profileSchema = new Schema(
   },
   { timestamps: false, _id: false }
 );
+
 const userSchema = new Schema(
   {
     role: {
       type: Schema.Types.String,
-      enum: ['USER', 'ADMIN'],
+      enum: Object.values(ROLES),
       required: true
     },
     profile: profileSchema,

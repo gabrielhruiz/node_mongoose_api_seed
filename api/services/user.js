@@ -2,11 +2,13 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 
+const { ROLES } = require('../enums/user');
+
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
 
-const generateAccessToken = userId => {
-  const payload = { userId, role: 'USER' };
+const generateAccessToken = (userId, role = ROLES.USER) => {
+  const payload = { userId, role };
   const options = { expiresIn: JWT_EXPIRATION };
   try {
     return jwt.sign(payload, JWT_SECRET, options);
@@ -15,7 +17,7 @@ const generateAccessToken = userId => {
   }
 };
 
-const generateRefreshToken = userId => {
+const generateRefreshToken = (userId) => {
   const payload = { userId };
   try {
     return jwt.sign(payload, JWT_SECRET);
@@ -42,9 +44,9 @@ const updateUser = (query = {}) => {
   return populates.reduce((acc, populate) => acc.populate(populate), result);
 };
 
-const createUser = (userData) => new Promise((resolve, reject) => {
+const createUser = userData => new Promise((resolve, reject) => {
   const { profile } = userData;
-  const newUser = new User({ profile, role: 'USER' });
+  const newUser = new User({ profile, role: ROLES.USER });
   return newUser.save()
     .then((user) => {
       const refresh_token = generateRefreshToken(user._id);
@@ -55,8 +57,8 @@ const createUser = (userData) => new Promise((resolve, reject) => {
         options: { new: true }
       });
     })
-    .then((user) => resolve(user))
-    .catch((error) => reject(error));
+    .then(user => resolve(user))
+    .catch(error => reject(error));
 });
 
 const deleteUser = (query) => {

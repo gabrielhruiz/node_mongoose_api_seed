@@ -19,7 +19,7 @@ module.exports.login = (email, password) => new Promise((resolve, reject) => {
       }
       return resolve(user);
     })
-    .catch((error) => reject(error));
+    .catch(error => reject(error));
 });
 
 module.exports.signup = (email, password, name) => {
