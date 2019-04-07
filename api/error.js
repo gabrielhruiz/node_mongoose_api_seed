@@ -32,7 +32,7 @@ const errors = {
 };
 
 exports = class Error {
-  static generateError = (status, message, data) => {
+  static generateError(status, message, data) {
     const error = errors[status];
     if (!error) {
       throw new Error('"status" parameter is required.');
@@ -48,7 +48,7 @@ exports = class Error {
 
     return error;
   };
-  static manageError = (error, req, res) => {
+  static manageError(error, req, res) {
     logger.error(`${req.method} ${req.originalUrl}: ${JSON.stringify(error)}`);
     return res.status(error.status || 500).json(error);
   };

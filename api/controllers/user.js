@@ -22,7 +22,10 @@ router.get('/user', (req, res) => {
 });
 
 router.get('/user/:id', (req, res) => {
-  const id = req.params.id === 'me' ? req.payload.userId : req.params.id;
+  if (req.params.id === 'me') {
+    return res.status(200).json(req.payload.user);
+  }
+  const id = req.params.id;
   const query = { conditions: { _id: id } };
   return userService.getUser(query)
     .then((user) => res.status(200).json(user))
@@ -38,7 +41,7 @@ router.post('/user', (req, res) => {
 
 router.put('/user/:id', (req, res) => {
   const userData = req.body;
-  const id = req.params.id === 'me' ? req.payload.userId : req.params.id;
+  const id = req.params.id === 'me' ? req.payload.user._id : req.params.id;
   const query = { conditions: { _id: id }, update: userData };
   return userService.updateUser(query)
     .then((user) => res.status(200).json(user))
