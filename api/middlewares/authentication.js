@@ -12,12 +12,12 @@ exports.jwtAuthenticate = (req, res, next) => {
     const { userId, role } = decoded;
     if (!userId || !role) {
       const error = Error.generateError(401, 'Invalid access token');
-      return res.status(error.status).json(error);
+      return Error.manageError(error, req, res)
     }
     req.payload = { userId, role };
     return next();
   } catch (err) {
     const error = Error.generateError(401, 'Not authenticate');
-    return res.status(error.status).json(error);
+    return Error.manageError(error, req, res)
   }
 };
