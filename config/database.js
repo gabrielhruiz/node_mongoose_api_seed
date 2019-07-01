@@ -17,10 +17,15 @@ const DB_OPTIONS = {
   family: 4 // Use IPv4, skip trying IPv6
 };
 
-exports.loadDB = () => mongoose.connect(DB_URI, DB_OPTIONS, (error) => {
-  if (error) {
-    logger.error(`Database: ${JSON.stringify(error)}`);
-    process.exit(1);
-  }
-  return logger.info('Database: Connection established');
-});
+exports.loadDB = () => {
+  mongoose.set('runValidators', true);
+  mongoose.connect(DB_URI, DB_OPTIONS);
+  mongoose.connection
+    .once('open', () => logger.info('Connected to data base successfully'))
+    .on('error', (error) => {
+      logger.error(`Connection data base error: ${error}`);
+      mongoose.connection.close();
+    })
+    .on('disconnected', () => logger.error('Lost MongoDB connection...'))
+    .on('reconnected', () => logger.info('Reconnected to MongoDB'));
+};
