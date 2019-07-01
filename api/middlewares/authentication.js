@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-const userService = require('../services/user');
+const { userService } = require('../services');
 
-const Error = require('../error');
+const Error = require('../Error');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -14,14 +14,14 @@ exports.jwtAuthenticate = (req, res, next) => {
     const { userId, role } = decoded;
     if (!userId || !role) {
       const error = Error.generateError(401, 'Invalid access token');
-      return Error.manageError(error, req, res)
+      return Error.manageError(error, req, res);
     }
-    return userService.getUser({ _id: userId }).then((user) => {
+    return userService.getDocument({ _id: userId }).then((user) => {
       req.payload = { user, role };
       return next();
-    }).catch((error) => Error.manageError(error, req, res));
+    }).catch(error => Error.manageError(error, req, res));
   } catch (err) {
     const error = Error.generateError(401, 'Not authenticate');
-    return Error.manageError(error, req, res)
+    return Error.manageError(error, req, res);
   }
 };

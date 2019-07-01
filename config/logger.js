@@ -1,10 +1,12 @@
 const winston = require('winston');
+
+const { NODE_ENV } = require('./environment');
+
 const { createLogger, format, transports } = winston;
 const { combine, timestamp, label, printf } = format;
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} [${label}] ${level}: ${message}`;
-});
+const myFormat = printf(({ level, message, label, timestamp }) =>
+  `${timestamp} [${label}] ${level}: ${message}`);
 
 const levelConfig = {
   levels: {
@@ -33,7 +35,7 @@ const logger = createLogger({
   transports: [new transports.Console()]
 });
 
-if (process.env.NODE_ENV === 'production') {
+if (NODE_ENV === 'production') {
   logger.add(new winston.transports.File({ filename: 'error.log', level: 'error' }));
   logger.add(new winston.transports.File({ filename: 'combined.log' }));
 }

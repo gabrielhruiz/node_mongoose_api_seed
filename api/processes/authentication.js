@@ -1,12 +1,14 @@
 /*
 * Author: gabrielhruiz
 * */
-const userService = require('./user');
+const { userService } = require('../services');
 
-const Error = require('./../error');
+const userProcess = require('./user');
 
-module.exports.login = (email, password) => new Promise((resolve, reject) =>
-  userService.getUser({ conditions: { 'profile.email': email } })
+const Error = require('../Error');
+
+const login = (email, password) => new Promise((resolve, reject) =>
+  userService.getDocument({ conditions: { 'profile.email': email } })
     .then((user) => {
       if (!user) {
         const error = Error.generateError(401, 'Bad email', { id: 'BAD_EMAIL' });
@@ -22,9 +24,11 @@ module.exports.login = (email, password) => new Promise((resolve, reject) =>
     .catch(error => reject(error))
 );
 
-module.exports.signup = (email, password, name) => {
+const signUp = (email, password, name) => {
   const user = {
     profile: { email, password, name }
   };
-  return userService.createUser(user);
+  return userProcess.createUser(user);
 };
+
+module.exports = { login, signUp };
