@@ -13,7 +13,7 @@ module.exports = class Service {
     return populates.reduce((acc, populate) => acc.populate(populate), result);
   }
   createDocument(data) {
-    return new this.Model(data);
+    return new this.Model(data).save();
   }
   updateDocument(query = {}) {
     const { condition = {}, update = {}, populates = [], options = {} } = query;
