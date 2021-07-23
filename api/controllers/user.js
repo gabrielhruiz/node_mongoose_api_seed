@@ -20,6 +20,6 @@ router.get('/user', getUserList);
 router.get('/user/:id', getUserById);
 router.post('/user', createUser);
 router.put('/user/:id', updateUser);
-router.delete('/user/:id', deleteUser, onlyAdminAllowed);
+router.delete('/user/:id', onlyAdminAllowed, deleteUser);
 
 module.exports = router;
