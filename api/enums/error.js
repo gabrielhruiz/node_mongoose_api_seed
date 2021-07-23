@@ -1,4 +1,4 @@
-const errors = {
+exports.ERRORS = {
   400: {
     status: 400,
     statusMessage: 'Bad Request',
@@ -26,24 +26,5 @@ const errors = {
   501: {
     status: 501,
     statusMessage: 'Not Implemented',
-  }
-};
-
-module.exports = class Error {
-  static generateError(status, message, data) {
-    const error = errors[status];
-    if (!error) {
-      throw new Error('"status" parameter is required.');
-    }
-
-    if (message) {
-      error.message = message;
-    }
-
-    if (data && data instanceof Object) {
-      error.data = data;
-    }
-
-    return error;
   }
 };

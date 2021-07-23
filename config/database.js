@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const logger = require('./logger');
+const { MONGO_URI: DB_URI } = require('./environment');
 
 const DB_OPTIONS = {
   useNewUrlParser: true,
@@ -15,12 +16,16 @@ const DB_OPTIONS = {
   socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
   family: 4 // Use IPv4, skip trying IPv6
 };
-const DB_URI = process.env.MONGO_URI;
 
-exports.loadDB = () => mongoose.connect(DB_URI, DB_OPTIONS, (error) => {
-  if (error) {
-    return logger.error(`Database: ${JSON.stringify(error)}`);
-    process.exit(1);
-  }
-  return logger.info('Database: Connection established');
-});
+exports.loadDB = () => {
+  mongoose.set('runValidators', true);
+  mongoose.connect(DB_URI, DB_OPTIONS);
+  mongoose.connection
+    .once('open', () => logger.info('Connected to data base successfully'))
+    .on('error', (error) => {
+      logger.error(`Connection data base error: ${error}`);
+      mongoose.connection.close();
+    })
+    .on('disconnected', () => logger.error('Lost MongoDB connection...'))
+    .on('reconnected', () => logger.info('Reconnected to MongoDB'));
+};

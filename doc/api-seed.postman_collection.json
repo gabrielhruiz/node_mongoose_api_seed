@@ -86,7 +86,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzkwMmE3M2YzM2M0NDJiMjgwYWQzMTYiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTU1MzAwMDk4MH0.G9Rg2VOB1CfU-ThA36BA4b7cgt3fkP6coF4ZHeix98k",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzkwMmE3M2YzM2M0NDJiMjgwYWQzMTYiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTU1NDYzNTI4NywiZXhwIjoxNTU0NzIxNjg3fQ.qtSaqsyLcpaqWQvk4z6HqpoggBL8h5qKvFVloWuHacE",
 									"type": "string"
 								}
 							]
@@ -130,7 +130,52 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzkwMmE3M2YzM2M0NDJiMjgwYWQzMTYiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTU1MzAwMDk4MH0.G9Rg2VOB1CfU-ThA36BA4b7cgt3fkP6coF4ZHeix98k",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzkwMmE3M2YzM2M0NDJiMjgwYWQzMTYiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTU1NDYzNTI4NywiZXhwIjoxNTU0NzIxNjg3fQ.qtSaqsyLcpaqWQvk4z6HqpoggBL8h5qKvFVloWuHacE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/user/5c902a73f33c442b280ad316",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"5c902a73f33c442b280ad316"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/me",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzkwMmE3M2YzM2M0NDJiMjgwYWQzMTYiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTU1MzM1MzAzMSwiZXhwIjoxNTUzNDM5NDMxfQ.P5xKNAbKWMRTA2fi5KiDHRjZsBeaa6aExBEpoWV5crA",
 									"type": "string"
 								}
 							]

@@ -17,11 +17,11 @@ const bodyParserUrl = bodyParser.urlencoded({
 });
 
 const routes = [auth];
-const generateRoutes = (app) =>
+const generateRoutes = app =>
   app.use(`/${API_VERSION}`, bodyParserUrl, bodyParserJson, routes);
 
 const jwtRoutes = [user];
-const generateJwtRoutes = (app) =>
+const generateJwtRoutes = app =>
   app.use(`/${API_VERSION}`, bodyParserUrl, bodyParserJson, jwtAuthenticate, jwtRoutes);
 
 exports.generateAPIRoutes = (app) => {

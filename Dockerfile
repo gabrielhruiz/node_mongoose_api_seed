@@ -12,17 +12,19 @@ MAINTAINER Gabriel<gabrielhruiz@gmail.com>
 
 #### Begin setup ####
 
-# Bundle app source
-COPY . /src
-
 # Change working directory
-WORKDIR "/src"
+WORKDIR /app
+
+COPY package.json .
 
 # Install dependencies
 RUN npm install --production
 
+# Bundle app source
+COPY . /app
+
 # Expose port
-EXPOSE 8081
+EXPOSE 8080
 
 # Startup
 ENTRYPOINT node server.js
