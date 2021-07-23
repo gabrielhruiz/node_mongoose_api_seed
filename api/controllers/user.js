@@ -3,14 +3,23 @@
 * */
 const express = require('express');
 
-const userMiddleware = require('../middlewares/user');
+const {
+  getUserList,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser
+} = require('../middlewares/user');
+const {
+  onlyAdminAllowed
+} = require('../middlewares/authentication');
 
 const router = express.Router();
 
-router.get('/user', userMiddleware.getUserList);
-router.get('/user/:id', userMiddleware.getUserById);
-router.post('/user', userMiddleware.createUser);
-router.put('/user/:id', userMiddleware.updateUser);
-router.delete('/user/:id', userMiddleware.deleteUser);
+router.get('/user', getUserList);
+router.get('/user/:id', getUserById);
+router.post('/user', createUser);
+router.put('/user/:id', updateUser);
+router.delete('/user/:id', deleteUser, onlyAdminAllowed);
 
 module.exports = router;

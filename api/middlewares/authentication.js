@@ -5,6 +5,8 @@ const { userService } = require('../services');
 const authProcess = require('../processes/authentication');
 const userProcess = require('../processes/user');
 
+const { ROLES } = require('../enums/user');
+
 const Error = require('../Error');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -22,6 +24,11 @@ exports.jwtAuthenticate = async (req, res, next) => {
     }
 
     const user = await userService.getDocument({ _id: userId });
+    if (!user) {
+      const error = Error.generateError(401, 'Bad credentials');
+      return Error.manageError(error, req, res);
+    }
+
     req.payload = { user, role };
 
     return next();
@@ -61,6 +68,20 @@ exports.login = async (req, res) => {
     credentials.access_token = userProcess.generateAccessToken(credentials._id);
 
     return res.status(200).json(credentials);
+  } catch (error) {
+    return Error.manageError(error, req, res);
+  }
+};
+
+exports.onlyAdminAllowed = async (req, res, next) => {
+  try {
+    const { user } = req.payload;
+    if (user.role !== ROLES.ADMIN) {
+      const error = Error.generateError(401, 'Not Authorized');
+      return Error.manageError(error, req, res);
+    }
+
+    return next();
   } catch (error) {
     return Error.manageError(error, req, res);
   }
