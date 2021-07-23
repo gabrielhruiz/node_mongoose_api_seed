@@ -24,4 +24,4 @@ module.exports = class Service {
     const { conditions, options } = query;
     return this.Model.findOneAndRemove(conditions, options);
   }
-}
+};

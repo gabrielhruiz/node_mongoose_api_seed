@@ -19,6 +19,7 @@ module.exports = class Error {
 
     return error;
   }
+
   static manageError(error, req, res) {
     logger.error(`${req.method} ${req.originalUrl}: ${JSON.stringify(error)}`);
     return res.status(error.status || 500).json(error);
